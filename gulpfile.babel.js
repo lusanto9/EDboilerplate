@@ -166,15 +166,15 @@ gulp.task('sitemap', () => {
     .pipe(gulp.dest('./public'))
 })
 
-gulp.task('dev', gulp.parallel(startServer, gulp.series(['styles-dev', 'pug-dev', 'scripts-dev', 'images-dev'])), () => {
-
-  watch('./src/scss/**/**', () => gulp.series('styles-dev'))
-  watch('./src/js/**/**', () => gulp.series('scripts-dev', server.reload))
-  watch('./src/pug/**/**', () => gulp.series('pug-dev', server.reload))
-  watch('./src/img/**/**', () => gulp.series('images-dev'))
-
+gulp.task('watch', () => {
+  gulp.watch('./src/scss/**/**', gulp.series('styles-dev'))
+  gulp.watch('./src/js/**/**', gulp.series('scripts-dev', server.reload))
+  gulp.watch('./src/pug/**/**', gulp.series('pug-dev', server.reload))
+  gulp.watch('./src/img/**/**', gulp.series('images-dev'))
   return
 })
+
+gulp.task('dev', gulp.parallel(startServer, gulp.series(['styles-dev', 'pug-dev', 'scripts-dev', 'images-dev', 'watch'])))
 
 gulp.task('cache', () => {
   return gulp.src('./public/**/*.html')
@@ -183,6 +183,5 @@ gulp.task('cache', () => {
     }))
     .pipe(gulp.dest('./public'))
 })
-
 
 gulp.task('build', gulp.series(gulp.parallel(['styles-build', 'pug-build', 'scripts-build', 'images-build', 'cache', 'sitemap'])))
